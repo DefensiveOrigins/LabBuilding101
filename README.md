@@ -1,4 +1,4 @@
-### Welcome to Lab Building 101
+# Welcome to Lab Building 101
 
 This repo was created for the gracious folks at Wild West Hackin' Fest, who picked us up, dusted us off and said "here's another chance guys, go get 'em!" ...and who gave us an opportunity to run a rapid fire workshop about lab building.
 
@@ -6,7 +6,7 @@ Anyway, here's the Defensive Origins crew builds labs!
 
 
 
-### Building a Lab on Azure with ARM
+# Building a Lab on Azure with ARM
 
 Time to deploy: **Approximately 30-60 minutes**
 
@@ -68,7 +68,7 @@ A visual aid for your lab deployment is shown in the next image.
 
 
 
-### Connecting to Infrastructure 
+# Connecting to Infrastructure 
 
 <!-- DO-CREDENTIAL-REMINDER-START -->
 <Details><summary>
@@ -248,14 +248,99 @@ ssh doadmin@'YOUR-PUB-C2-IP'
 
 </blockquote></details>
 
-### Installing Tools Rapid Fire Style
+# Installing Tools Rapid Fire Style
 
-We packed a bunch of tools onto your Linux system during the build process. So, there's a start, but here's some more quick hitters. 
+We packed a bunch of tools onto your Linux system during the build process. So, there's a start, but here's some more quick hitters. We regularly wrap python tools in virtual environments, so be prepared to `activate` and `deactivate`. Also, install virtual-env. 
+
+```
+apt install python3-virtualenv -y 
+```
+
+Or, use pip. 
+
+```
+python3 -m pip install venv
+```
+
+Now, let's rock and roll. One of the tools we didn't install via bootstrap on the Linux box was DonPAPI. This is a browser shredder (and more). Copy and paste the following block into your Linux terminal. 
+
+```
+cd /opt/
+git clone https://github.com/login-securite/DonPAPI
+cd DonPAPI
+virtualenv -p python3 dp-env
+source dp-env/bin/activate
+python3 -m pip install .
+DonPAPI -h
+```
+
+
+# BadBlood
 
 
 
-### BadBlood
+### &#x1FA9F; Windows credentials
 
-### GO SPEEDRACER GO!!!!!!
+When logging into the Windows system, use the following credentials.
+
+```Win-creds
+doazlab\doadmin
+DOLabAdmin1!
+```
+
+## &#x2460; AD Pollution with BadBlood
+
+</summary><blockquote>
+
+_Conduct Lab Operations from Domain Controller DC01_
+
+First, download and invoke BadBlood.
+
+** This is dangerous DO NOT RUN IN PRODUCTION ** 
+
+The following commands should be pasted into a PowerShell terminal session on the domain controller. 
+
+| &#x1FA9F; PowerShell Input | Domain Controller: DC01 |
+|----------------------------|-------------------------|
+```PowerShell
+$ProgressPreference = 'SilentlyContinue' 
+invoke-webrequest -URI https://github.com/Relkci/BadBlood/archive/refs/heads/master.zip -outfile badblood.zip 
+Expand-Archive .\badblood.zip 
+$ProgressPreference = 'Continue' 
+./badblood/BadBlood-master/invoke-badblood.ps1
+```
+
+| ![AD Pollution with BadBlood](img/ad-pollution-badblood-1.jpg) | 
+|------------------------------------------------|
+
+Three strikes against the enter key will result in a prompt to confirm your intentions. Again, *DO NOT RUN THIS IN PRODUCTION**. The `badblood` key word will then result in the creation of various AD objects, ACL tampering, and general pollution of your doazlab.com forest.
+
+| &#x1FA9F; PowerShell Input | Domain Controller: DC01 |
+|----------------------------|-------------------------|
+```PowerShell
+ [ENTER] x 3
+ badblood
+```
+
+Some errors are expected. 
+
+| ![AD Pollution Errors with BadBlood](img/ad-pollution-badblood-errors.jpg) | 
+|------------------------------------------------|
+
+**Exit PowerShell's AD> Prompt!**
+
+| &#x1FA9F; PowerShell Input | Domain Controller: DC01 |
+|----------------------------|-------------------------|
+```PowerShell
+exit
+```
+
+&#x21E8; *Step Complete, Go to the next step!*
+
+</blockquote></details>
+
+
+
+# GO SPEEDRACER GO!!!!!!
 
 
