@@ -1,3 +1,5 @@
+![Top](img/top.png)
+
 # Welcome to Lab Building 101
 
 This repo was created for the gracious folks at Wild West Hackin' Fest, who picked us up, dusted us off and said "here's another chance guys, go get 'em!" ...and who gave us an opportunity to run a rapid fire workshop about lab building.
@@ -947,3 +949,13 @@ Open a browser and search `stealer logs 101`.
 An interesting link: https://www.zerofox.com/blog/an-introduction-to-stealer-logs/
 
 </blockquote></details>
+
+# Defensive Origins Classes at Antisyphon Training
+
+Defensive Origins offers the following classes at [Antisyphon Training](https://www.antisyphontraining.com):
+
+- **Assumed Compromise**  
+  [https://www.antisyphontraining.com/assumed-compromise/](https://www.antisyphontraining.com/assumed-compromise/)
+
+- **Active Directory Security Hardening**  
+  [https://www.antisyphontraining.com/product/active-directory-security-and-hardening-with-jordan-drysdale-and-kent-ickler/](https://www.antisyphontraining.com/product/active-directory-security-and-hardening-with-jordan-drysdale-and-kent-ickler/)
