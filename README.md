@@ -36,7 +36,7 @@ Time to deploy: **Approximately 30-60 minutes**
 
 Authenticate to your Azure portal: 
 
-| &#x1f30e; URL | Browser on Students Local System |
+| &#x1f30e; URL | Browser on Student's Local System |
 |---------------|----------------------------------|
 ```url
 https://portal.azure.com
@@ -55,7 +55,7 @@ About half way down the page, click the **Deploy to Azure** button.
 | ![www.doazlab.com Lab Build Launcher](img/deploy-doazlab-com.jpg) | 
 |------------------------------------------------|
 
-Select your subscription, resource group, and location.  Document this location, it will be needed later in class.
+Select your subscription, resource group, and location. Document this location, it will be needed later in class.
 
 | ![Subscription, Resource Group, Location](img/deploy-sub-rg-location.jpg) | 
 |------------------------------------------------|
@@ -80,7 +80,7 @@ The process takes between 25 and 30 minutes to fully deploy. The deployment conf
 | ![Lab Deployment Confirmation](img/deploy-confirmation.jpg) | 
 |------------------------------------------------|
 
-The **Outputs** option in the left navigation tree includes the access details you will need for SSH and RDP access into the lab environment. Document these IP addresses, you will need them later to access your lab infrastructure.
+The **Outputs** option in the left navigation tree includes the access details you will need for SSH and RDP access into the lab environment. Document these IP addresses as you will need them later to access your lab infrastructure.
 
 | ![Lab Deployment Outputs: Access Details](img/deploy-outputs.jpg) | 
 |------------------------------------------------|
@@ -172,7 +172,7 @@ Establish an RDP connection to the IP address of your lab's workstation. You wil
 | ![Workstation Certificate Offer](img/linux-rdp-cert-ws.jpg) | 
 |------------------------------------------------|
 
-The domain controller will prompt you to accept the discovery settings. Your lab is isolated and our guidance is to click **Yes**. The course authors do not believe choosing **No** will affect any of the course content.
+The domain controller will prompt you to accept the discovery settings. The lab is isolated and general guidance is to click **Yes**. 
 
 | ![Domain Controller Initial Desktop](img/linux-rdp-initial-dc-desktop.jpg) | 
 |------------------------------------------------|
@@ -221,7 +221,7 @@ Establish an RDP connection to the IP address of your lab's workstation. You wil
 | ![WS Cert Offer](img/win-rdp-cert-ws.jpg) | 
 |------------------------------------------------|
 
-The domain controller will prompt you to accept the discovery settings. Your lab is isolated and our guidance is to click **Yes**. The course authors do not believe choosing **No** will affect any of the course content.
+The domain controller will prompt you to accept the discovery settings. This lab is isolated and general guidance is to click **Yes**.
 
 | ![DC Initial Desktop](img/win-rdp-initial-dc-desktop.jpg) | 
 |------------------------------------------------|
@@ -337,7 +337,7 @@ Jump over to the **dc01** RDP session.
 
 # BadBlood
 
-This tool makes a mess out of an existing lab environment, your production AD, or anywhere you run this. ** This is dangerous DO NOT RUN IN PRODUCTION ** 
+This tool makes a mess out of an existing lab environment, your production AD, or anywhere you run this. ** This is dangerous!!! DO NOT RUN IN PRODUCTION ** 
 
 ### &#x1FA9F; Windows credentials
 
@@ -356,7 +356,7 @@ _Conduct Lab Operations from Domain Controller DC01_
 
 First, download and invoke BadBlood.
 
-** This is dangerous DO NOT RUN IN PRODUCTION ** 
+** This is dangerous!!! DO NOT RUN IN PRODUCTION ** 
 
 The following commands should be pasted into a PowerShell terminal session on the domain controller. 
 
@@ -636,7 +636,7 @@ Install some additional packages for Kerberos on the Linux box with the followin
 apt-get install krb5-user libpam-krb5 libpam-ccreds -y
 ```
 
-Then run `klist` to take a peek at the exported ticket[s]. After export, the ticket should look something the following.
+Then run `klist` to take a peek at the exported ticket[s]. After export, the ticket should look something like the following.
 
 | ![klist invoke](img/klist-invoke.jpg) |
 |------------------------------------------------|
@@ -811,7 +811,7 @@ certipy find -vulnerable -target-ip 192.168.2.4 -u noprivuser@doazlab.com -p 'N0
 | ![Find Vulnerable Templates](img/adcs-find-vuln.jpg) |
 |------------------------------------------------|
 
-Lets inspect the produced results.
+Inspect the produced results with the following command.
 
 | &#x1F427; Bash Input | Linux Host: Nux01 |
 |----------------------|-------------------|
@@ -822,7 +822,7 @@ cat adcs*.txt
 | ![ESC1 Vulnerability](img/esc1-vuln.jpg) |
 |------------------------------------------------|
 
-In the next step, we will attempt to exploit one of the weak certificate templates. But, first we need to find a user SID and set a var. Basically, Microsoft tried to fix a thing with a cheesy little "protection" mechanism that required a user's SID to be submitted with a certificate request. Legit, from MS patch to not fixed anymore was like 17 seconds. 
+In the next step, we will attempt to exploit one of the weak certificate templates. But, first we need to find a user SID and set a var. Basically, Microsoft tried to fix a thing with a cheesy little "protection" mechanism that required a user's SID to be submitted with a certificate request. Legit, this went from an MS patch to not fixed anymore was like 17 seconds. 
 
 | &#x1F427; Bash Input | Linux Host: Nux01 |
 |----------------------|-------------------|
