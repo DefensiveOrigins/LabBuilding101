@@ -6,6 +6,33 @@ Anyway, here's how the Defensive Origins crew builds labs!
 
 
 
+# Table of Contents
+
+1. [Lab Building 101](#welcome-to-lab-building-101)
+2. [Building a Lab on Azure with ARM](#building-a-lab-on-azure-with-arm)
+3. [Connecting to Infrastructure](#connecting-to-infrastructure)
+    - [Lab Credentials](#lab-credentials)
+    - [Lab Deployment Network Connectivity](#lab-deployment-network-connectivity)
+    - [Establish RDP Connections (from Linux)](#establish-rdp-connections-from-linux)
+    - [Establish Remote Desktop Connections (from Windows)](#establish-remote-desktop-connections-from-windows)
+    - [Establish SSH Connection](#establish-ssh-connection)
+4. [Installing Tools Rapid Fire Style](#installing-tools-rapid-fire-style)
+5. [BadBlood](#badblood)
+    - [AD Pollution with BadBlood](#ad-pollution-with-badblood)
+6. [GO SPEEDRACER GO!!!!!!](#go-speedracer-go)
+    - [Lab Credentials](#lab-credentials-1)
+    - [Activate Impacket Virtual Environment](#activate-impacket-virtual-environment)
+    - [Get AD Users](#get-ad-users)
+    - [Interrogate Service Principals](#interrogate-service-principals)
+    - [Secretsdump Remote Access](#secretsdump-remote-access)
+    - [Establish Semi-Interactive SMB Shell](#establish-semi-interactive-smb-shell)
+    - [Request a Ticket as doadmin](#request-a-ticket-as-doadmin)
+    - [Add Computer Object via Kerberos Authentication](#add-computer-object-via-kerberos-authentication)
+    - [Use Regsecrets with a Kerberos Ticket](#use-regsecrets-with-a-kerberos-ticket)
+    - [Extras from here out](#extras-from-here-out)
+
+
+
 # Building a Lab on Azure with ARM
 
 Time to deploy: **Approximately 30-60 minutes**
@@ -104,7 +131,7 @@ DOLabAdmin1!
 
 </summary><blockquote>
 
-The screenshot in this section demonstrates the output values from the course ARM template deployemnt. 
+The screenshot in this section demonstrates the output values from the course ARM template deployment. 
 
 You will need all of these at various points throughout the course material. You should keep them handy in a notes document or similar quick-reference.
 
@@ -423,7 +450,7 @@ Ensure you are root with sudo.
 sudo -s
 ```
 
-Run the next commands as a codeblock to instantiate the venv and list the Python tools in the impacket repo.
+Run the next commands as a code-block to instantiate the venv and list the Python tools in the impacket repo.
 
 | &#x1F427; Bash Input | Linux Host: Nux01 |
 |----------------------|-------------------|
@@ -774,7 +801,7 @@ sudo -s
 | ![Sudo -s](img/sudo-s.jpg) |
 |------------------------------------------------|
 
-Next, we will run certipfy to assess the ADCS environment.
+Next, we will run Certipy to assess the ADCS environment.
 
 | &#x1F427; Bash Input | Linux Host: Nux01 |
 |----------------------|-------------------|
@@ -787,7 +814,7 @@ certipy find -vulnerable -target-ip 192.168.2.4 -u noprivuser@doazlab.com -p 'N0
 | ![Find Vulnerable Templates](img/adcs-find-vuln.jpg) |
 |------------------------------------------------|
 
-Lets insepct the produced results.
+Lets inspect the produced results.
 
 | &#x1F427; Bash Input | Linux Host: Nux01 |
 |----------------------|-------------------|
@@ -862,7 +889,7 @@ Chrome Input:
 - Username: `chromeuser`
 - Password: `chromepass1!`
 
-After inputing username and password values, follow the operations described below and shown in the subsequent screenshot. 
+After inputting username and password values, follow the operations described below and shown in the subsequent screenshot. 
 
 1. Click **Login** button.
 2. Click the circled **key** in the right portion of the address bar.
