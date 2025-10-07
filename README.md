@@ -13,18 +13,18 @@ Anyway, here's how the Defensive Origins crew builds labs!
 3. [Connecting to Infrastructure](#connecting-to-infrastructure)
 4. [Installing Tools Rapid Fire Style](#installing-tools-rapid-fire-style)
 5. Tools:
-  - Badblood
-  - Impacket GetADUsers.py
-  - Impacket GetUsersSPNs.py
-  - Impacket Secretsdump.py
-  - Impacket smbexec.py
-  - Impacket getTGT.py
-  - Impacket addcomputer.py
-  - Impacket regsecrets.py
-  - Windows ADCS
-  - PowerShell ADCSTemplate 
-  - Certipy (Find/Request/Auth)
-  - DonPAPI
+    - Badblood
+    - Impacket GetADUsers.py
+    - Impacket GetUsersSPNs.py
+    - Impacket Secretsdump.py
+    - Impacket smbexec.py
+    - Impacket getTGT.py
+    - Impacket addcomputer.py
+    - Impacket regsecrets.py
+    - Windows ADCS
+    - PowerShell ADCSTemplate 
+    - Certipy (Find/Request/Auth)
+    - DonPAPI
 
 
 
