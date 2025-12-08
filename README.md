@@ -312,7 +312,7 @@ ssh doadmin@'YOUR-PUB-C2-IP'
 
 <Details><summary>
 
-## &#x2463; Installing A Few Tools
+## &#x2460; Installing A Few Tools
 
 </summary><blockquote>
 
@@ -363,7 +363,7 @@ DonPAPI -h
 
 <Details><summary>
 
-## &#x2463; Let's Make A Big Mess of Active Directory
+## &#x2461; Let's Make A Big Mess of Active Directory
 
 For testing things and making the lab enviro more interesting!
 
@@ -373,7 +373,7 @@ Jump over to the **dc01** RDP session.
 
 ## BadBlood
 
-This tool makes a mess out of an existing lab environment, your production AD, or anywhere you run this. ** This is dangerous!!! DO NOT RUN IN PRODUCTION ** 
+BadBlood makes a mess out of an existing AD lab environment, your production AD, or anywhere you run this. ** This is dangerous!!! DO NOT RUN IN PRODUCTION AD ** 
 
 ### &#x1FA9F; Windows credentials
 
@@ -384,11 +384,11 @@ doazlab\doadmin
 DOLabAdmin1!
 ```
 
-First, download and invoke BadBlood.
+Download and invoke [BadBlood](https://github.com/davidprowe/BadBlood).
 
 ** This is dangerous!!! DO NOT RUN IN PRODUCTION ** 
 
-The following commands should be pasted into a PowerShell terminal session on the domain controller. 
+Paste the following commands into a PowerShell terminal session on the domain controller. 
 
 | &#x1FA9F; PowerShell Input | Domain Controller: DC01 |
 |----------------------------|-------------------------|
@@ -398,6 +398,7 @@ invoke-webrequest -URI https://github.com/Relkci/BadBlood/archive/refs/heads/mas
 Expand-Archive .\badblood.zip 
 $ProgressPreference = 'Continue' 
 ./badblood/BadBlood-master/invoke-badblood.ps1
+
 ```
 
 | ![AD Pollution with BadBlood](img/ad-pollution-badblood-1.jpg) | 
@@ -431,7 +432,26 @@ exit
 
 
 
-# GO SPEEDRACER GO!!!!!!
+<Details><summary>
+
+## &#x2462; Go Check Out the Builder Code
+
+"In the silence of the shadows, the wise do not merely wield their swords; they study the forge that shapes them. For it is not the weapon, but the understanding of its purpose, that leads to the unraveling of the hidden and the protection of the realm." -duckduckAI
+
+</summary><blockquote>
+
+Original credit and inspiration for the architecture is due to [Roberto Rodriguez](https://github.com/Cyb3rWard0g) and his work on [Microsoft-Sentinel2Go](https://github.com/OTRF/Microsoft-Sentinel2Go).
+
+The lab architecture code is [out on Github](https://github.com/DefensiveOrigins/DO-LAB/blob/main/README.md) and has been shared many times. Fork away.
+
+The C2 builder and tool installer bootstrap was created and originally shared by the [absolutely brilliant Phil Miller](https://github.com/mr-pmillz) and is [available out here](https://github.com/DefensiveOrigins/DO-LAB/blob/main/Deploy-Linux/scripts/Install-Tools.sh).
+
+&#x21E8; *Step Complete, Go to the next step!*
+
+</blockquote></details>
+
+
+### Finally Time To Run Some Tools
 
 <!-- DO-CREDENTIAL-REMINDER-START -->
 <Details><summary>
@@ -460,6 +480,8 @@ DOLabAdmin1!
 
 </blockquote></details>
 <!-- DO-CREDENTIAL-REMINDER-END -->
+
+
 
 ## &#x2460; Activate Impacket Virtual Environment 
 
