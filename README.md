@@ -2,10 +2,9 @@
 
 # Welcome to Lab Building 101
 
-This repo was created for the gracious folks at Wild West Hackin' Fest, who picked us up, dusted us off and said "here's another chance guys, go get 'em!" ...and who gave us an opportunity to run a rapid fire workshop about lab building.
+This repo was created for the gracious folks at Wild West Hackin' Fest, who picked us up, dusted us off and said "here's another chance guys, go get 'em!" ...and who gave us an opportunity to run a rapid fire workshop.
 
 Anyway, here's how the Defensive Origins crew builds labs!
-
 
 
 # Table of Contents
@@ -29,6 +28,12 @@ Anyway, here's how the Defensive Origins crew builds labs!
     - DonPAPI
 
 
+# Contributors
+
+The great [Alyssa Snow](https://github.com/SleepyStudnt).  
+The great [Kaitlyn Wimberly](https://github.com/Kadawi).  
+The great [Jordan Drysdale](https://github.com/rev10d).  
+The great [Kent Ickler](https://github.com/Relkci).  
 
 # Building a Lab on Azure with ARM
 
@@ -75,7 +80,7 @@ One more click will bring you to the validation check. After a moment, you can c
 | ![Lab Config Validation](img/deploy-validation.jpg) | 
 |------------------------------------------------|
 
-The process takes between 25 and 30 minutes to fully deploy. The deployment confirmation shown next is indicative of a successful build. 
+The process takes between 30 and 60 minutes to fully deploy. The deployment confirmation shown next is indicative of a successful build. 
 
 | ![Lab Deployment Confirmation](img/deploy-confirmation.jpg) | 
 |------------------------------------------------|
@@ -128,9 +133,7 @@ DOLabAdmin1!
 
 </summary><blockquote>
 
-The screenshot in this section demonstrates the output values from the course ARM template deployment. 
-
-You will need all of these at various points throughout the course material. You should keep them handy in a notes document or similar quick-reference.
+The screenshot in this section demonstrates the output values from the course ARM template deployment. Each build will differ. You will need all of these at various points throughout the workspace material. You should keep them handy in a notes document or similar quick-reference.
 
 | ![Outputs: IP Address Details](img/outputs-IP-details.jpg) | 
 |------------------------------------------------|
@@ -286,7 +289,7 @@ DOLabAdmin1!
 | ![Connection to SSH Server from Linux](img/linux-ssh-connect.jpg) | 
 |------------------------------------------------|
 
-Did you know you can SSH directly from Windows 10 without additional installation, packages, or software? You can, straight from PowerShell.
+Did you know you can SSH directly from Windows 11 without additional installation, packages, or software? You can, straight from PowerShell.
 
 | &#x1FA9F; PowerShell Input |
 |-----------------------|
@@ -301,27 +304,43 @@ ssh doadmin@'YOUR-PUB-C2-IP'
 
 </blockquote></details>
 
+
+
+
+
 # Installing Tools Rapid Fire Style
 
-You need root perms for most of the tools in this lab, sudo up.
+<Details><summary>
+
+## &#x2463; Installing A Few Tools
+
+</summary><blockquote>
+
+You need root perms for most of the tools in this lab, so `sudo` up partner.
 
 ```bash
 sudo -s
+
 ```
 
-We packed a bunch of tools onto your Linux system during the build process. We regularly wrap python tools in virtual environments, so be prepared to `activate` and `deactivate`. Also, install virtual-env. 
+A bunch of tools onto your Linux system during the build process, [check the install list here](https://github.com/DefensiveOrigins/DO-LAB/blob/main/Deploy-Linux/scripts/Install-Tools.sh). We regularly wrap python tools in virtual environments, so be prepared to `activate` and `deactivate`. Also, you should install a virtual environment wrapper like **virtualenv**, **venv**, **pipx** when you install python tools. 
+
+You could use `apt`.
 
 ```bash
+# install python tooling venv framework
 apt install python3-virtualenv -y 
+
 ```
 
-Or, use pip. 
+Or, you could use `pip`. 
 
 ```bash
 pip3 install virtualenv
+
 ```
 
-Now, let's rock and roll. One of the tools we didn't install via bootstrap on the Linux box was DonPAPI. This is a browser shredder (and more). Copy and paste the following block into your Linux terminal. 
+One of the tools not installed via bootstrap on the Linux box was [DonPAPI](https://github.com/login-securite/DonPAPI). This is a browser shredder and much more. Copy and paste the following block into your Linux terminal to install `DonPAPI`. 
 
 ```bash
 cd /opt/
@@ -331,11 +350,28 @@ virtualenv -p python3 dp-env
 source dp-env/bin/activate
 python3 -m pip install .
 DonPAPI -h
+
 ```
+
+
+&#x21E8; *Step Complete, Go to the next step!*
+
+</blockquote></details>
+
+
+
+
+<Details><summary>
+
+## &#x2463; Let's Make A Big Mess of Active Directory
+
+For testing things and making the lab enviro more interesting!
+
+</summary><blockquote>
 
 Jump over to the **dc01** RDP session. 
 
-# BadBlood
+## BadBlood
 
 This tool makes a mess out of an existing lab environment, your production AD, or anywhere you run this. ** This is dangerous!!! DO NOT RUN IN PRODUCTION ** 
 
@@ -347,12 +383,6 @@ When logging into the Windows system, use the following credentials.
 doazlab\doadmin
 DOLabAdmin1!
 ```
-
-## &#x2460; AD Pollution with BadBlood
-
-</summary><blockquote>
-
-_Conduct Lab Operations from Domain Controller DC01_
 
 First, download and invoke BadBlood.
 
