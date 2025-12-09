@@ -363,7 +363,7 @@ DonPAPI -h
 
 <Details><summary>
 
-## &#x2461; Let's Make A Big Mess of Active Directory
+## &#x2461; Let's Make A Mess of Active Directory
 
 For testing things and making the lab enviro more interesting!
 
@@ -436,7 +436,7 @@ exit
 
 ## &#x2462; Go Check Out the Builder Code
 
-"In the silence of the shadows, the wise do not merely wield their swords; they study the forge that shapes them. For it is not the weapon, but the understanding of its purpose, that leads to the unraveling of the hidden and the protection of the realm." -duckduckAI
+"In the silence of the shadows, the wise do not merely wield their swords; they study the forge that shapes them. For it is not the weapon, but the understanding of its purpose, that leads to the unraveling of the hidden and the protection of the realm." -duckAIckler
 
 </summary><blockquote>
 
