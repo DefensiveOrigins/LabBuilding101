@@ -483,6 +483,10 @@ DOLabAdmin1!
 
 
 
+
+
+<Details><summary>
+
 ## &#x2460; Activate Impacket Virtual Environment 
 
 </summary><blockquote>
