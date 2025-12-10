@@ -37,6 +37,12 @@ The great [Kent Ickler](https://github.com/Relkci).
 
 # Building a Lab on Azure with ARM
 
+<Details><summary>
+
+## &#x1F512; Azure Lab Deployment
+
+</summary><blockquote>
+
 Time to deploy: **Approximately 30-60 minutes**
 
 Authenticate to your Azure portal: 
@@ -95,6 +101,11 @@ A visual aid for your lab deployment is shown in the next image.
 | ![Lab Deployment Visual](img/lab-visual.jpg) | 
 |------------------------------------------------|
 
+
+
+&#x21E8; *Step Complete, Go to the next step!*
+
+</blockquote></details>
 
 
 # Connecting to Infrastructure 
