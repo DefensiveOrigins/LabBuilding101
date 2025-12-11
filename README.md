@@ -1100,3 +1100,6 @@ Defensive Origins offers the following classes at [Antisyphon Training](https://
 
 - **Active Directory Security Hardening**  
   [https://www.antisyphontraining.com/product/active-directory-security-and-hardening-with-jordan-drysdale-and-kent-ickler/](https://www.antisyphontraining.com/product/active-directory-security-and-hardening-with-jordan-drysdale-and-kent-ickler/)
+
+- **FreeLabsFree**
+   [https://tinyurl.com/freelabsfree](https://tinyurl.com/freelabsfree)
